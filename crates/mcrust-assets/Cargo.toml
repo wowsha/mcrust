@@ -1,0 +1,23 @@
+[package]
+name = "mcrust-assets"
+description = "Minecraft: Java Edition version manifest, download and resource extraction pipeline"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+indicatif.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha1.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+ureq.workspace = true
+zip.workspace = true
+dirs.workspace = true
+
+[dev-dependencies]
+tempfile = "3"

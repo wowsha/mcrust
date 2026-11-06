@@ -1,0 +1,61 @@
+name: Vanilla pipeline
+
+# Verifies that the downloader still works against live Mojang endpoints:
+# version manifest -> version JSON -> client.jar -> libraries -> asset index
+# -> resource pack extraction. No Mojang files are uploaded anywhere.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+
+concurrency:
+  group: vanilla-pipeline
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends pkg-config libudev-dev
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Download Minecraft 26.3
+        run: cargo run --release -p mcrust-cli -- setup --version 26.3 --assets index
+
+      - name: Show installation details
+        run: cargo run --release -p mcrust-cli -- info --version 26.3
+
+      - name: Verify the extracted resource pack
+        run: |
+          set -euo pipefail
+          root="$HOME/.mcrust/versions/26.3/resources/assets/minecraft"
+          test -f "$root/textures/block/stone.png"
+          test -f "$root/textures/block/grass_block_top.png"
+          test -f "$root/models/block/stone.json"
+          test -f "$root/blockstates/grass_block.json"
+          test -f "$root/lang/en_us.json"
+          echo "blockstates: $(ls "$root/blockstates" | wc -l)"
+          echo "models:      $(ls "$root/models/block" | wc -l)"
+          echo "textures:    $(ls "$root/textures/block" | wc -l)"
+
+      - name: Verify the asset index
+        run: |
+          set -euo pipefail
+          test -f "$HOME/.mcrust/assets/indexes/34.json"
+          python3 - <<'PY'
+          import json, os
+          index = json.load(open(os.path.expanduser("~/.mcrust/assets/indexes/34.json")))
+          print("asset objects:", len(index["objects"]))
+          assert len(index["objects"]) > 3000
+          PY

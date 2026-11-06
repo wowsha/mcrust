@@ -1,0 +1,16 @@
+[package]
+name = "mcrust-client"
+description = "Bevy/wgpu client for the mcrust Minecraft port"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+bevy.workspace = true
+mcrust-assets.workspace = true
+mcrust-vanilla.workspace = true
+mcrust-world.workspace = true
+tracing.workspace = true

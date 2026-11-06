@@ -1,0 +1,16 @@
+[package]
+name = "mcrust-world"
+description = "Chunk storage, terrain generation and chunk meshing"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+mcrust-vanilla.workspace = true
+
+[dev-dependencies]
+mcrust-assets.workspace = true
+tempfile = "3"
+image.workspace = true

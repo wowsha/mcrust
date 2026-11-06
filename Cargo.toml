@@ -1,0 +1,53 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/mcrust-assets",
+    "crates/mcrust-vanilla",
+    "crates/mcrust-world",
+    "crates/mcrust-client",
+    "crates/mcrust-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.97"
+authors = ["mcrust contributors"]
+repository = "https://github.com/wowsha/mcrust"
+license = "MIT OR Apache-2.0"
+
+[workspace.dependencies]
+anyhow = "1.0"
+bevy = { version = "0.20.1", default-features = false, features = ["3d"] }
+clap = { version = "4.5", features = ["derive"] }
+dirs = "6"
+image = { version = "0.25", default-features = false, features = ["png"] }
+indicatif = "0.18"
+mcrust-assets = { path = "crates/mcrust-assets" }
+mcrust-client = { path = "crates/mcrust-client" }
+mcrust-vanilla = { path = "crates/mcrust-vanilla" }
+mcrust-world = { path = "crates/mcrust-world" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha1 = "0.11"
+thiserror = "2.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+ureq = { version = "3.5", features = ["json", "gzip"] }
+zip = { version = "9.4", default-features = false, features = ["deflate-flate2"] }
+
+# Fast iteration builds that are still usable for a game.
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+
+[profile.dist]
+inherits = "release"
+lto = "fat"

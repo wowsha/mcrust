@@ -1,0 +1,22 @@
+## Rust
+/target
+**/*.rs.bk
+
+## Game data downloaded from Mojang (never committed)
+*.jar
+/assets/
+/vanilla/
+/.mcrust/
+decompiled/
+*.class
+
+## Local scripts / editor
+.env
+.env.*
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+## Logs
+*.log
