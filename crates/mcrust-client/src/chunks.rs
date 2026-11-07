@@ -65,7 +65,7 @@ pub fn manage_chunks(
     manager.update(center, &mut commands, &mut meshes, &assets);
 
     *frames = frames.wrapping_add(1);
-    if *frames % 240 == 0 {
+    if frames.is_multiple_of(240) {
         tracing::debug!(
             loaded = manager.loaded_chunks(),
             meshing = manager.meshing.len(),

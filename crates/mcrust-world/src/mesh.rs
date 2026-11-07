@@ -398,7 +398,9 @@ mod tests {
         let neighborhood =
             ChunkNeighborhood::new(&center, |dx, dz| (dx == 1 && dz == 0).then_some(&east));
         let mesh = mesh_chunk(&neighborhood, &registry, &atlas);
-        assert_eq!(mesh.opaque.face_count(), 10);
+        // Only the center chunk is meshed: its +X face is hidden by the
+        // neighbour's block, leaving five visible faces.
+        assert_eq!(mesh.opaque.face_count(), 5);
     }
 
     #[test]

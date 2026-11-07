@@ -208,7 +208,8 @@ mod tests {
 
         assert_eq!(atlas.tile_count(), 2);
         assert_eq!(atlas.width(), 2 * CELL);
-        assert_eq!(atlas.width() % TILE, 0);
+        // Cells include a repeated-edge border so mip levels don't bleed.
+        assert!(atlas.width() > 2 * TILE);
 
         let stone = atlas.uv("stone").unwrap();
         let (px, py) = (

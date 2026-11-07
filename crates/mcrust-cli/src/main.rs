@@ -172,7 +172,16 @@ fn run(cli: Cli) -> Result<()> {
             width,
             height,
         } => launch(
-            &paths, version, username, demo, dry_run, memory_mb, width, height,
+            &paths,
+            VanillaLaunchArgs {
+                version,
+                username,
+                demo,
+                dry_run,
+                memory_mb,
+                width,
+                height,
+            },
         ),
         Command::Decompile {
             version,
@@ -256,17 +265,8 @@ fn play(
     mcrust_client::run(options)
 }
 
-fn launch(
-    paths: &Paths,
-    version: Option<String>,
-    username: String,
-    demo: bool,
-    dry_run: bool,
-    memory_mb: Option<u32>,
-    width: u32,
-    height: u32,
-) -> Result<()> {
-    let id = version.unwrap_or_else(|| default_version(paths));
+fn launch(paths: &Paths, args: VanillaLaunchArgs) -> Result<()> {
+    let id = args.version.unwrap_or_else(|| default_version(paths));
     if !is_playable(paths, &id) {
         bail!("Minecraft {id} is not installed. Run `mcrust setup --version {id}` first.");
     }
@@ -274,15 +274,26 @@ fn launch(
         paths,
         &LaunchOptions {
             version: id,
-            username,
-            demo,
-            width,
-            height,
-            dry_run,
-            memory_mb,
+            username: args.username,
+            demo: args.demo,
+            width: args.width,
+            height: args.height,
+            dry_run: args.dry_run,
+            memory_mb: args.memory_mb,
             extra_game_args: Vec::new(),
         },
     )
+}
+
+/// Arguments for launching the vanilla Java client.
+struct VanillaLaunchArgs {
+    version: Option<String>,
+    username: String,
+    demo: bool,
+    dry_run: bool,
+    memory_mb: Option<u32>,
+    width: u32,
+    height: u32,
 }
 
 fn decompile(paths: &Paths, version: Option<String>, force: bool, heap: &str) -> Result<()> {
